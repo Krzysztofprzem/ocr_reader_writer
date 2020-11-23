@@ -1,0 +1,7 @@
+{
+    "path": "images\\",
+    "apikey": "helloworld", 
+    "language": "jpn",
+    "online": true,
+    "interval": 0.01
+}
