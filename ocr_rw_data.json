@@ -3,5 +3,5 @@
     "apikey": "helloworld", 
     "language": "jpn",
     "online": true,
-    "interval": 0.01
+    "interval": 0.1
 }

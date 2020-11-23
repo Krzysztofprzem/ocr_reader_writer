@@ -1,4 +1,5 @@
-images/
+temp/
+input/
 output/
 my_ocr_rw_data.json
 
