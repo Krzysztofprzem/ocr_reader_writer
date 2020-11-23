@@ -4,8 +4,10 @@ import numpy as np
 import requests
 import time
 from PIL import Image
+import os
 
-def create_necessary_directories(self, path):
+
+def create_necessary_directories(path):
     try:
         os.makedirs(path)
     except OSError:
@@ -61,19 +63,21 @@ def ocr_reader_writer():
         # Create catalog tree in outputpath for each image 
         index = str(filename).rfind("\\")
         directory_path = output_path+str(filename)[:index]
-        create_necessary_directories
+        create_necessary_directories(directory_path)
 
         # Send image to ocr space and get text result
-        text_detected = ocrspace_call(str(filename), apikey, language, True)
+        filename = "00127.jpg"
+        text_detected = ocrspace_call(str(filename), apikey, language, False)
+        print(text_detected)
 
         # Save detected text into text file
         outputtextfilepath = output_path+str(filename)[:-3]+".txt"
-        textfile = open(outputtextfilepath, 'w')
+        textfile = open(outputtextfilepath, 'w', encoding='utf8')
         textfile.write(text_detected)
         textfile.close()
 
         # In order to not getting banned from ocr space
-        time_start = time()
+        time_start = time.time()
         while time.time() - time_start < interval:
             continue
         break
