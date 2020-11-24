@@ -1,6 +1,5 @@
 from pathlib import Path
 import json
-import numpy as np
 import requests
 import time
 from PIL import Image
@@ -106,8 +105,9 @@ def ocr_reader_writer():
         filename_str = str(filename)
 
         # Create catalog tree in outputpath for each image 
-        index = filename_str.rfind("\\")
-        directory_path = output_path+filename_str[:index]
+        left_index  = filename_str.find("\\")
+        right_index = filename_str.rfind("\\")
+        directory_path = output_path+filename_str[left_index:right_index]
         create_necessary_directories(directory_path)
 
         # Check if image has size bigger than 1024KB
@@ -121,7 +121,7 @@ def ocr_reader_writer():
             os.remove(filename_new)
 
         # Save detected text into text file
-        outputtextfilepath = output_path+filename_str[:-3]+"txt"
+        outputtextfilepath = output_path+filename_str[left_index:-3]+"txt"
         textfile = open(outputtextfilepath, 'w', encoding='utf8')
         textfile.write(text_detected)
         textfile.close()
@@ -130,7 +130,6 @@ def ocr_reader_writer():
         time_start = time.time()
         while time.time() - time_start < interval:
             continue
-
 
 
 if __name__ == "__main__":
