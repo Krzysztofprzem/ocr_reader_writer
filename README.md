@@ -7,6 +7,7 @@ Project was created and tested with:
 * Python 3.8.2
 * Tesseract v5.0.0-alpha.20200328
 * OCR Space
+
 This project was tested with .jpg and .png only images.
 
 
