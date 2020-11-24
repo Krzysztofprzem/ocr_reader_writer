@@ -1,15 +1,15 @@
 {
-    "input_path":"input\\",
-    "output_path":"output\\",
-    "online":true,
-    "ocr_space":{
-        "apikey":"helloworld", 
-        "language":"jpn"
+    "input_path": "input\\",
+    "output_path": "output\\",
+    "online": true,
+    "ocr_space": {
+        "apikey": "helloworld", 
+        "language": "jpn"
     },
     "tesseract":
     {
         "path": "D:\\Program Files\\Tesseract-OCR\\tesseract.exe",
         "lang": "jpn_vert"
     },
-    "interval":0.1
+    "interval": 0.1
 }

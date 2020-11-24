@@ -154,5 +154,5 @@ def ocr_reader_writer(ocr_rw_data_path):
 
 if __name__ == "__main__":
     # Editable parameter
-    ocr_rw_data_path = "my_ocr_rw_data.json"
+    ocr_rw_data_path = "ocr_rw_data.json"
     ocr_reader_writer()
