@@ -104,18 +104,18 @@ def tesseract_call(filename="kawaii.jpg",
 
 def ocr_reader_writer(ocr_rw_data_path):
     # Supported images extensions
-    images_extensions = [".jpg"]
+    images_extensions = [".jpg", ".png"]
 
     # Load ocr reader writer data
     ocr_rw_data = json.load(open(ocr_rw_data_path))
 
     # Unpack ocr reader writer data
-    input_path = ocr_rw_data["input_path"]
-    output_path = ocr_rw_data["output_path"]
+    input_path     = ocr_rw_data["input_path"]
+    output_path    = ocr_rw_data["output_path"]
     ocr_space_data = ocr_rw_data["ocr_space"]
     tesseract_data = ocr_rw_data["tesseract"]
-    interval = ocr_rw_data["interval"]
-    online = ocr_rw_data["online"]
+    interval       = ocr_rw_data["interval"]
+    online         = ocr_rw_data["online"]
 
     # Get paths to all images in input_path
     filenames = []
@@ -138,7 +138,7 @@ def ocr_reader_writer(ocr_rw_data_path):
             good_size, filename_new = preprocess(filename_str)
 
             # Send image to ocr space
-            text_detected = ocrspace_call(filename_new, ocr_space_data, True)
+            text_detected = ocrspace_call(filename_new, ocr_space_data, False)
 
             # If image had size bigger than 1024KB remove temporary compressed image
             if good_size is False:
