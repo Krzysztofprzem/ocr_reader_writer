@@ -103,6 +103,9 @@ def tesseract_call(filename="kawaii.jpg",
 
 
 def ocr_reader_writer(ocr_rw_data_path):
+    # Supported images extensions
+    images_extensions = [".jpg"]
+
     # Load ocr reader writer data
     ocr_rw_data = json.load(open(ocr_rw_data_path))
 
@@ -115,7 +118,11 @@ def ocr_reader_writer(ocr_rw_data_path):
     online = ocr_rw_data["online"]
 
     # Get paths to all images in input_path
-    filenames = Path(input_path).rglob('*.jpg')
+    filenames = []
+    for image_extension in images_extensions:
+        filenames += Path(input_path).rglob('*'+image_extension)
+
+    # Main loop
     for filename in filenames:
         # Convert filename into string
         filename_str = str(filename)
@@ -155,4 +162,4 @@ def ocr_reader_writer(ocr_rw_data_path):
 if __name__ == "__main__":
     # Editable parameter
     ocr_rw_data_path = "ocr_rw_data.json"
-    ocr_reader_writer()
+    ocr_reader_writer(ocr_rw_data_path)
