@@ -57,8 +57,8 @@ def preprocess(filename_str):
         return True, filename_str
 
 
-# :param apikey: shouldn't be equal to "helloworld" unless method is used to test less than or equal to 10 times (look on https://ocr.space/ocrapi)
-# :param language: language (look on https://ocr.space/ocrapi)
+# apikey- shouldn't be equal to "helloworld" unless method is used to test less than or equal to 10 times (look on https://ocr.space/ocrapi)
+# language- language (look on https://ocr.space/ocrapi)
 
 def ocrspace_call(filename="kawaii.jpg", ocr_space_data={"apikey":"helloworld", "language":"jpn"}, printing=False):
     """
@@ -86,8 +86,12 @@ def ocrspace_call(filename="kawaii.jpg", ocr_space_data={"apikey":"helloworld", 
         if printing:
             print(result)
 
-        parsed_results = result.get("ParsedResults")[0]
-        text_detected = parsed_results.get("ParsedText")
+        try:
+            parsed_results = result.get("ParsedResults")[0]
+            text_detected = parsed_results.get("ParsedText")
+        except:
+            print(result)
+            exit()
 
     return text_detected
 
@@ -122,16 +126,20 @@ def ocr_reader_writer(ocr_rw_data_path):
     for image_extension in images_extensions:
         filenames += Path(input_path).rglob('*'+image_extension)
 
+    directory_path_old = ""
     # Main loop
     for filename in filenames:
         # Convert filename into string
         filename_str = str(filename)
+        print(filename_str)
 
         # Create catalog tree in outputpath for each image 
         left_index  = filename_str.find("\\")
         right_index = filename_str.rfind("\\")
         directory_path = output_path+filename_str[left_index:right_index]
-        create_necessary_directories(directory_path)
+        if directory_path != directory_path_old:
+            create_necessary_directories(directory_path)
+            directory_path_old = directory_path
 
         if online:
             # Check if image has size bigger than 1024KB
