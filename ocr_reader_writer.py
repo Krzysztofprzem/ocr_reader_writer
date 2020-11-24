@@ -4,6 +4,7 @@ import requests
 import time
 from PIL import Image
 import os
+import pytesseract
 
 
 def create_necessary_directories(path):
@@ -56,16 +57,21 @@ def preprocess(filename_str):
         return True, filename_str
 
 
-def ocrspace_call(filename="kawaii.jpg", apikey="helloworld", language="jpn", printing=False):
+# :param apikey: shouldn't be equal to "helloworld" unless method is used to test less than or equal to 10 times (look on https://ocr.space/ocrapi)
+# :param language: language (look on https://ocr.space/ocrapi)
+
+def ocrspace_call(filename="kawaii.jpg", ocr_space_data={"apikey":"helloworld", "language":"jpn"}, printing=False):
     """
     Method to scrape text string from image saved on disk
     :param filename: path to image
-    :param apikey: shouldn't be equal to "helloworld" unless method is used to test less than or equal to 10 times (look on https://ocr.space/ocrapi)
-    :param language: language (look on https://ocr.space/ocrapi)
+    :param ocr_space: dict with apikey and language keys whose values specify ocr space work
     :param printing: if True then printing debugging stuff
     :return: text from image
     """
     url_api = "https://api.ocr.space/parse/image"
+
+    apikey = ocr_space_data["apikey"]
+    language = ocr_space_data["language"]
 
     with open(filename, "rb") as f:
 
@@ -86,17 +92,27 @@ def ocrspace_call(filename="kawaii.jpg", apikey="helloworld", language="jpn", pr
     return text_detected
 
 
-def ocr_reader_writer():
+def tesseract_call(filename="kawaii.jpg", 
+                   tesseract_data={"path": r"D:\\Program Files\\Tesseract-OCR\\tesseract.exe", "lang":"jpn"}):
+    im = Image.open(filename)
+    path = tesseract_data["path"]
+    lang = tesseract_data["lang"]
+    pytesseract.pytesseract.tesseract_cmd = path
+    text_detected = pytesseract.image_to_string(im, lang=lang)
+    return text_detected
+
+
+def ocr_reader_writer(ocr_rw_data_path):
     # Load ocr reader writer data
-    ocr_rw_data_path = "my_ocr_rw_data.json"
     ocr_rw_data = json.load(open(ocr_rw_data_path))
 
     # Unpack ocr reader writer data
     input_path = ocr_rw_data["input_path"]
     output_path = ocr_rw_data["output_path"]
-    apikey = ocr_rw_data["apikey"]
-    language = ocr_rw_data["language"]
+    ocr_space_data = ocr_rw_data["ocr_space"]
+    tesseract_data = ocr_rw_data["tesseract"]
     interval = ocr_rw_data["interval"]
+    online = ocr_rw_data["online"]
 
     # Get paths to all images in input_path
     filenames = Path(input_path).rglob('*.jpg')
@@ -110,15 +126,19 @@ def ocr_reader_writer():
         directory_path = output_path+filename_str[left_index:right_index]
         create_necessary_directories(directory_path)
 
-        # Check if image has size bigger than 1024KB
-        good_size, filename_new = preprocess(filename_str)
+        if online:
+            # Check if image has size bigger than 1024KB
+            good_size, filename_new = preprocess(filename_str)
 
-        # Send image to ocr space
-        text_detected = ocrspace_call(filename_new, apikey, language, True)
+            # Send image to ocr space
+            text_detected = ocrspace_call(filename_new, ocr_space_data, True)
 
-        # If image had size bigger than 1024KB remove temporary compressed image
-        if good_size is False:
-            os.remove(filename_new)
+            # If image had size bigger than 1024KB remove temporary compressed image
+            if good_size is False:
+                os.remove(filename_new)
+        else:
+            # Use pytesseract
+            text_detected = tesseract_call(filename_str, tesseract_data)
 
         # Save detected text into text file
         outputtextfilepath = output_path+filename_str[left_index:-3]+"txt"
@@ -133,4 +153,6 @@ def ocr_reader_writer():
 
 
 if __name__ == "__main__":
+    # Editable parameter
+    ocr_rw_data_path = "my_ocr_rw_data.json"
     ocr_reader_writer()
