@@ -12,7 +12,7 @@ This project was tested with .jpg and .png only images.
 
 
 #### Description
-Project created in order to automate process of extracting text from images set into textfiles. This currently supports only .jpg and .png images extensions.
+Project created in order to automate process of extracting text from images set into textfiles. This project currently supports only .jpg and .png images extensions.
 
 
 #### Example application
